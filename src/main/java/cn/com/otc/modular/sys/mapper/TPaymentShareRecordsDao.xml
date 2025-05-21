@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.otc.modular.sys.dao.TPaymentShareRecordsDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.com.otc.modular.sys.bean.pojo.TPaymentShareRecords">
+        <id column="id" property="id" />
+        <result column="tron_trans_id" property="tronTransId" />
+        <result column="payment_id" property="paymentId" />
+        <result column="share_user_id" property="shareUserId" />
+        <result column="invited_user_id" property="invitedUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        select id, tron_trans_id, payment_id,share_user_id, invited_user_id,create_time, update_time from t_payment_share_records
+    </sql>
+
+</mapper>

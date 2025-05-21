@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.otc.modular.sys.dao.TAccountDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.com.otc.modular.sys.bean.pojo.TAccount">
+        <id column="id" property="id" />
+        <result column="account_id" property="accountId" />
+        <result column="account_type" property="accountType" />
+        <result column="user_id" property="userId" />
+        <result column="amount" property="amount" />
+        <result column="islock" property="islock" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, account_id, account_type, user_id, amount, islock, create_time, update_time
+    </sql>
+
+    <select id="selectTAccountByTgId" resultType="cn.com.otc.modular.sys.bean.pojo.TAccount">
+        select id, account_id, account_type, user_id, amount, islock, create_time, update_time from t_account
+        where user_id = #{userId} and account_type = #{accountType}
+    </select>
+
+</mapper>

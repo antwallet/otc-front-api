@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.otc.modular.sys.dao.TChargeDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.com.otc.modular.sys.bean.pojo.TCharge">
+        <id column="id" property="id" />
+        <result column="orderId" property="order_id" />
+        <result column="userId" property="user_id" />
+        <result column="base58CheckAddress" property="base58_check_address" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="expire_time" property="expireTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="money" property="money" />
+        <result column="charge_type" property="chargeType" />
+        <result column="charge_time" property="chargeTime" />
+        <result column="charge_txid" property="chargeTxid" />
+        <result column="qrcode_image" property="qrcodeImage" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_id, user_id, base58_check_address, status, create_time, expireTime,
+        update_time, money, charge_type, charge_time, charge_txid, qrcode_image
+    </sql>
+
+</mapper>

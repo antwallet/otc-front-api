@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.otc.modular.sys.dao.TAccountTradeDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.com.otc.modular.sys.bean.pojo.TAccountTrade">
+        <id column="id" property="id" />
+        <result column="account_id" property="accountId" />
+        <result column="user_id" property="userId" />
+        <result column="trade_no" property="tradeNo" />
+        <result column="money" property="money" />
+        <result column="trade_type" property="tradeType" />
+        <result column="left_amount" property="leftAmount" />
+        <result column="account_type" property="accountType" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, account_id, user_id, trade_no, money, trade_type, left_amount, account_type, create_time
+    </sql>
+
+    <select id="queryByPage" resultMap="BaseResultMap">
+        select money,account_type,trade_type,user_id,create_time,trade_no from t_account_trade
+        <where>
+            <if test="tradeType != null">
+                and trade_type = #{tradeType}
+            </if>
+            <if test="accountType != null">
+                and account_type = #{accountType}
+            </if>
+            <if test="accountType != null and accountType!='' ">
+                and account_id = #{accountId}
+            </if>
+        </where>
+        order by create_time desc
+        limit #{start},#{pageSize}
+    </select>
+
+    <select id="queryByPageCount" resultType="java.lang.Integer">
+        select count(1) from t_account_trade
+        where account_id = #{accountId} and account_type = #{accountType}
+    </select>
+
+</mapper>

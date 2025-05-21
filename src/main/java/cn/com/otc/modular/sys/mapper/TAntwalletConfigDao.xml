@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.otc.modular.sys.dao.TAntwalletConfigDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.com.otc.modular.sys.bean.pojo.TAntwalletConfig">
+        <id column="p_key" property="pKey" />
+        <result column="p_value" property="pValue" />
+        <result column="p_desc" property="pDesc" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        select p_key, p_value, p_desc FROM t_antwalletbot_config
+    </sql>
+
+
+</mapper>

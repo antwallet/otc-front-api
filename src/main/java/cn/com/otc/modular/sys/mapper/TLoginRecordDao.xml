@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.otc.modular.sys.dao.TLoginRecordDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.com.otc.modular.sys.bean.pojo.TLoginRecord">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="login_time" property="loginTime" />
+        <result column="login_channel" property="loginChannel" />
+        <result column="create_time" property="createTime" />
+        <result column="user_count" property="userCount" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, login_time, login_channel, create_time
+    </sql>
+    <update id="updateLoginRecord" parameterType="java.lang.String">
+        update `antwalletbot_server`.`t_login_record` set `last_login_time` = now(),login_count=login_count+1 WHERE `user_id` = #{userId};
+    </update>
+
+    <select id="queryTLoginRecordByUserId" resultMap="BaseResultMap">
+        SELECT t_login_record.user_id, t_login_record.login_time, t_login_record.login_channel, t_login_record.create_time,COUNT(t_login_record.user_id) as user_count
+        FROM t_login_record
+                 LEFT JOIN t_user on t_user.user_id=t_login_record.user_id
+        where TG_id=#{tgId}
+        GROUP BY t_login_record.user_id
+    </select>
+
+</mapper>

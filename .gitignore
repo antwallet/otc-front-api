@@ -1,0 +1,26 @@
+## ide
+**/.idea
+*.iml
+rebel.xml
+
+## backend
+**/target
+**/logs
+**/build
+**/out
+**/.git
+
+## front
+**/*.lock
+os_del.cmd
+os_del_doc.cmd
+.svn
+derby.log
+/gradle/wrapper/gradle-wrapper.jar
+/gradle/wrapper/gradle-wrapper.properties
+/.gradle/8.5/dependencies-accessors/gc.properties
+/.gradle/8.5/executionHistory/executionHistory.bin
+/.gradle/8.5/fileChanges/last-build.bin
+/.gradle/8.5/fileHashes/fileHashes.bin
+/.gradle/8.5/fileHashes/resourceHashesCache.bin
+/.gradle/vcs-1/gc.properties

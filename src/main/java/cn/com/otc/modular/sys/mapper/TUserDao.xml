@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.otc.modular.sys.dao.TUserDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.com.otc.modular.sys.bean.pojo.TUser">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="TG_id" property="tgId" />
+        <result column="name" property="name" />
+        <result column="nick" property="nick" />
+        <result column="sex" property="sex" />
+        <result column="phone" property="phone" />
+        <result column="email" property="email" />
+        <result column="islock" property="islock" />
+        <result column="login_name" property="loginName" />
+        <result column="password" property="password" />
+        <result column="login_time" property="loginTime" />
+        <result column="login_channel" property="loginChannel" />
+        <result column="charge_psw" property="chargePsw" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="redpacket_cover_img" property="redpacketCoverImg" />
+        <result column="avatar" property="avatar" />
+        <result column="isshow_panel" property="isshowPanel" />
+        <result column="registration_date" property="registrationDate" />
+        <result column="device_model" property="deviceModel" />
+        <result column="ip_address" property="ipAddress" />
+        <result column="is_premium" property="isPremium" />
+        <result column="country" property="country" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        select id, user_id, TG_id, name, nick, sex, phone, email, islock, login_name, password, login_time,
+        login_channel,charge_psw, create_time, update_time,redpacket_cover_img,avatar,isshow_panel,country,`language` from `antwalletbot_server`.`t_user`
+    </sql>
+
+    <update id="updateUserPwdByTgId" parameterType="java.lang.String">
+        UPDATE `antwalletbot_server`.`t_user`
+        SET
+            `charge_psw`        = #{password},
+            `update_time` = now()   WHERE `TG_id` = #{tgId};
+    </update>
+
+
+    <select id="queryByUserIdList" resultMap="BaseResultMap">
+        SELECT user_id, TG_id, name, nick,`language`        FROM `antwalletbot_server`.`t_user`
+        WHERE user_id IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getTUserByTGIds" resultType="cn.com.otc.modular.sys.bean.pojo.TUser">
+        <include refid="Base_Column_List"/> where TG_id in
+        <foreach collection="keys" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+    <select id="getTUserByUserIds" resultMap="BaseResultMap">
+        SELECT user_id, TG_id, name, nick,`language`
+        FROM `antwalletbot_server`.`t_user`
+        WHERE user_id IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        LIMIT 0, 200
+    </select>
+
+</mapper>

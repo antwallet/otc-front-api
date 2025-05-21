@@ -1,0 +1,221 @@
+# 项目相关配置
+otc:
+  name: otc-front-api
+  version : 1.0.0
+
+
+# 开发环境配置
+server:
+  # 服务器的HTTP端口，默认为8080
+  port: 18085
+  servlet:
+    # 应用的访问路径
+    context-path: /
+  tomcat:
+    # tomcat的URI编码
+    uri-encoding: UTF-8
+    # 连接数满后的排队数，默认为100
+    accept-count: 20
+    threads:
+      # tomcat最大线程数，默认为200
+      max: 10
+      # Tomcat启动初始化的线程数，默认值10
+      min-spare: 5
+
+# 日志配置
+logging:
+  level:
+    root: info
+    # 方便测试 打印debug ； 正式环境请注销掉
+    cn.com.otc.*: debug
+    org.springframework.boot.autoconfigure: info
+  config: classpath:logback-spring.xml
+  file:
+    name: ./logs/
+    max-history: 120
+    max-size: 250MB
+
+
+# Spring配置
+spring:
+  redisson:
+    address: redis://127.0.0.1:6379
+    password: xxx #密码
+#    password: 123qWE #密码
+    timeout: 10000
+    connectionPoolSize: 300
+    connectionMinimumIdleSize: 50
+    connectTimeout: 10000
+    #连接间隔 心跳
+    pingConnectionInterval: 10000
+  # 资源信息
+  messages:
+    # 国际化资源文件路径
+    basename: i18n/messages
+  profiles:
+    #active: druid
+    active: hikari
+  # 文件上传
+  servlet:
+     multipart:
+       # 单个文件大小
+       max-file-size:  10MB
+       # 设置总上传的文件大小
+       max-request-size:  20MB
+
+  # 服务模块
+  devtools:
+    restart:
+      # 热部署开关
+      enabled: true
+  # redis 配置
+  redis:
+    # 地址
+    host: 127.0.0.1
+#    host: 127.0.0.1
+    # 端口，默认为6379
+    port: 6379
+    # 数据库索引
+    database: 0
+    # 密码
+    password: xxx  # 密码（默认为空）
+#    password:
+    # 连接超时时间
+    timeout: 10s
+    lettuce:
+      pool:
+        # 连接池中的最小空闲连接
+        min-idle: 2
+        # 连接池中的最大空闲连接
+        max-idle: 4
+        # 连接池的最大数据库连接数
+        max-active: 8
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+  cloud:
+    config:
+      enabled: false
+    sentinel:
+      transport:
+        dashboard: 47.237.23.152:9090  # Sentinel 控制台的地址
+        port: 9091  # Java 客户端向控制台注册的端口（这个端口是 Sentinel 客户端用来与控制台通信的，可以自定义，但需要确保没有被占用）
+  application:
+    name: front-api-service  # 项目名称，用于在 Sentinel 控制台中标识
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+  mapper-locations: classpath*:cn/com/otc/**/mapper/*.xml
+
+
+# actuator服务监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    httptrace:
+      enabled: true
+  server:
+    port: 8088
+
+common:
+  token:
+    secret: Sqoh8I53YCBK9d64msJrn6gl5bZ1PU3X
+    timeout: 7200000
+  logo:
+    default-path: D:\idea\myworkspace\antwalletbot-front-api\logo.png
+    trx-path: D:\idea\myworkspace\antwalletbot-front-api\TRX.png
+    usdt-path: D:\idea\myworkspace\antwalletbot-front-api\USDT.png
+  redpacket-cover:
+    default-path: /static/images/packetGitf2.mp4
+  premium:
+    type: 0 #会员购买 0 手购买会员  1，自动购买会员
+  robot-avatar:
+    avatar-path: https://localhost:28083/antwalletbot_client/static/images/avatar.png
+  administrator-tgId: 7492058922,1315619592
+
+tg:
+  http:
+    url: http://localhost:28083/api/sendredpacket
+    timeout: 8000
+    antwalletbot: https://localhost:28083/file/bot6899554665:AAFnv0c5xOUSrsrgleRirILhF5FUWySSvvo/
+    channelBotName: aimitbotchannel
+    channelName: mychannel
+    isChannelNewMember: 2
+    tg-token: 6899554665:AAFnv0c5xOUSrsrgleRirILhF5FUWySSvvo
+    api-file_path: https://api.telegram.org/file/bot6296708752:AAFh0rJRW4H1UJT0JBOwPk-lmIyRi5uiEp8/
+
+api:
+  signature:
+    secret: konH6gd6aHfXstAvs2y5AJIVHd3qusQr
+  antwalletbotasset:
+    url: https://localhost:28083/antwalletbot_client/
+  antwalletbot:
+    httpurl: https://t.me/antwalletbot
+  antwalletgroup:
+    httpurl: https://t.me/antwalletgroup
+
+# sa-token配置
+sa-token:
+  # SSO-相关配置
+  # token名称 (同时也是cookie名称)
+  token-name: AntwalletbotToken
+  # token有效期，单位s 默认30天, -1代表永不过期
+  timeout: 86400
+  # token临时有效期 [指定时间内无操作就视为token过期] (单位: 秒), 默认-1 代表不限制
+  activity-timeout: 21600
+  # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
+  allow-concurrent-login: true
+  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
+  is-share: false
+  # token风格
+  token-style: uuid
+  # 是否打印操作日志
+  is-log: false
+  is-print: false
+  # OAuth2.0 配url置
+  oauth2:
+    is-code: false
+    is-implicit: false
+    is-password: false
+    is-client: true
+    access-token-timeout: 21600
+
+#cloud人机验证密钥
+cloudFlare:
+  secretKey: xxx
+
+tron:
+  config:
+    domainOnline: true
+    apiKey: xxx
+    trc20Address: TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t
+    hexPrivateKey: xxx
+    toAddress: xxx
+    withdrawAddress: xxx
+    withdrawHexPrivateKey: xxx
+    energy:
+      api-key: xxx
+      api-secret: xxx
+
+oss:
+  accessKey:
+    id: xxx
+    secret: xxx
+  endpoint: xxx
+
+ton:
+  config:
+    path: /mnt/soft/antwalletbot/antwalletbot_py
+
+whitelistPath: 127.0.0.1,192.168.5.204,47.236.253.213,13.214.89.233
+
+robotname: grab_redpacket_bot
+# 项目域名
+projectDomainName: https://dev.antwallet.org

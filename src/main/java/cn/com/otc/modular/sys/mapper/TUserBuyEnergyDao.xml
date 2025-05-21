@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.otc.modular.sys.dao.TUserBuyEnergyDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.com.otc.modular.sys.bean.pojo.TUserBuyEnergy">
+        <id column="id" property="id" />
+        <result column="energy_buy_id" property="energyBuyId" />
+        <result column="pay_user_id" property="payUserId" />
+        <result column="energy_type" property="energyType" />
+        <result column="money" property="money" />
+        <result column="hex_address" property="hexAddress" />
+        <result column="account_type" property="accountType" />
+        <result column="status" property="status" />
+        <result column="rent_time" property="rentTime" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, energy_buy_id,pay_user_id, energy_type, money,hex_address, account_type,rent_time, status, create_time, update_time
+    </sql>
+
+</mapper>

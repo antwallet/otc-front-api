@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.otc.modular.sys.dao.TPaymentRecordsDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.com.otc.modular.sys.bean.pojo.TPaymentRecords">
+        <id column="id" property="id" />
+        <result column="tron_trans_id" property="tronTransId" />
+        <result column="payment_id" property="paymentId" />
+        <result column="send_user_id" property="sendUserId" />
+        <result column="payment_user_id" property="paymentUserId" />
+        <result column="payment_money" property="paymentMoney" />
+        <result column="chat_bot_name" property="chatBotName" />
+        <result column="status" property="status" />
+        <result column="account_type" property="accountType" />
+        <result column="create_time" property="createTime" />
+        <result column="expiry_time" property="expiryTime" />
+        <result column="payment_time" property="paymentTime" />
+        <result column="subscription_expiry_time" property="subscriptionExpiryTime" />
+        <result column="is_remind" property="isRemind" />
+        <result column="update_time" property="updateTime" />
+        <result column="share_rate" property="shareRate" />
+        <result column="share_user_id" property="shareUserId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        select id, tron_trans_id, payment_id,send_user_id, account_type,payment_user_id, payment_money, chat_bot_name,status,
+               create_time, expiry_time, payment_time, subscription_expiry_time,update_time,is_remind,share_rate,share_user_id from t_payment_records
+    </sql>
+
+    <select id="tPaymentRecordsList" resultType="cn.com.otc.modular.sys.bean.pojo.TPaymentRecords"
+            parameterType="cn.com.otc.modular.sys.bean.vo.TPaymentRecordsVo">
+        SELECT
+        t_payment_records.id,
+        tron_trans_id as tronTransId,
+        payment_id as paymentId,
+        send_user_id as sendUserId,
+        payment_user_id paymentUserId,
+        payment_money paymentMoney,
+        t_payment_records.status,
+        t_payment_records.create_time,
+        t_payment_records.update_time,
+        t_user.nick as paymentUserNick,
+        t_user.name as paymentUserName,
+        account_type  accountType,
+        chat_bot_name  chatBotName,
+        payment_time  paymentTime,
+        expiry_time as expiryTime,
+        subscription_expiry_time as subscriptionExpiryTime
+        FROM
+        t_payment_records
+        LEFT JOIN t_user ON t_user.user_id = t_payment_records.payment_user_id
+        <where>
+            <if test="tPaymentRecordsVo.tronTransId != null and tPaymentRecordsVo.tronTransId != ''">
+                AND t_payment_records.tron_trans_id = #{tPaymentRecordsVo.tronTransId}
+            </if>
+            <if test="tPaymentRecordsVo.tgId != null and tPaymentRecordsVo.tgId != ''">
+                AND t_user.TG_id = #{tPaymentRecordsVo.tgId}
+            </if>
+        </where>
+        order by create_time desc
+        limit #{tPaymentRecordsVo.pageIndex},#{tPaymentRecordsVo.pageSize}
+    </select>
+    <select id="getPaymentRecords" resultType="java.lang.String">
+        SELECT status FROM  t_payment_records WHERE payment_id = #{paymentId}
+    </select>
+    <select id="selectTPaymentRecords" resultMap="BaseResultMap">
+        SELECT
+        t_payment_records.id,
+        tron_trans_id,
+        payment_id,
+        send_user_id,
+        payment_user_id,
+        payment_money,
+        t_payment_records.status,
+        t_payment_records.create_time,
+        t_payment_records.update_time,
+        t_user.TG_id
+        FROM
+        t_payment_records
+        LEFT JOIN t_user ON t_user.user_id = t_payment_records.payment_user_id
+        WHERE
+        t_user.TG_id = #{userTGID}
+        AND t_payment_records.tron_trans_id IN
+        <foreach item="id" collection="tronTransIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY
+        t_payment_records.create_time DESC
+        LIMIT 1  <!-- 只取最近的一条记录 -->
+    </select>
+    <select id="getPaymentRecord" resultMap="BaseResultMap">
+        <include refid="Base_Column_List"/>
+        WHERE is_remind = 0 AND chat_bot_name != '';
+    </select>
+    <select id="queryByPageCount" resultType="java.lang.Integer">
+        select count(1) from t_payment_records
+        where tron_trans_id = #{tronTransId}
+    </select>
+
+
+</mapper>
