@@ -1,12 +1,10 @@
 package cn.com.otc.common.config.interceptor;
 
-import cn.com.otc.common.config.NacosConstant;
 import cn.com.otc.common.utils.CheckTokenUtil;
 import cn.com.otc.modular.auth.entity.result.UserInfoResult;
 import cn.com.otc.modular.sys.bean.pojo.UserIpLimit;
 import cn.com.otc.modular.sys.manage.RateLimiterService;
 import cn.com.otc.modular.sys.service.UserIpLimitService;
-import cn.com.otc.test.GeoIpTest;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -28,10 +26,6 @@ import java.util.concurrent.TimeUnit;
 @Component("customIpRateLimiterFilter")
 @Slf4j
 public class IpRateLimiterFilter extends OncePerRequestFilter {
-    @Resource
-    private NacosConstant nacosConstant;
-    @Resource
-    private GeoIpTest geoIpTest;
     @Resource
     private CheckTokenUtil checkTokenUtil;
     private final Object blacklistLock = new Object();
@@ -69,42 +63,6 @@ public class IpRateLimiterFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String uri = request.getRequestURI();
         String ip = getClientIp(request);
-
-        /*String country = geoIpTest.getCountry(ip.split(",")[0]);
-        if ("孟加拉国".equals(country)) {
-            Map<String, Object> responseBody;
-            responseBody = new HashMap<>();
-            responseBody.put("code", STATUS_TOO_MANY_REQUESTS);
-            responseBody.put("msg", "Network error. Please try again later!");
-            response.setStatus(STATUS_TOO_MANY_REQUESTS);
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.getWriter().write(JSONUtil.toJsonStr(responseBody));
-            return;
-        }*/
-
-        String ignoreUrls = nacosConstant.getIgnoreUrls();
-        String[] split = ignoreUrls.split(",");
-        List<String> ignoreUrlsList = Arrays.asList(split);
-        //TGid+请求url+参数维度限流
-        if (!ignoreUrlsList.contains("/api/front/auth/doLogin") && !uri.startsWith("/api/front/child_activity_manage/queryActivityData")) {
-            String token = checkTokenUtil.getRequestToken(request);
-            UserInfoResult userInfoResult = null;
-            try {
-                userInfoResult = checkTokenUtil.getUserInfoByToken(token);
-            } catch (Exception e) {
-                log.info("token解析异常：{}", token);
-                return;
-            }
-            String tgId = userInfoResult.getUserTGID();
-
-            String tgIdKey = "rate_limit_tgid_" + tgId + "_" + uri;
-
-            // 检查 tgId 维度的限流 (1秒内最多1次),
-            //如果想改成2秒内只能请求一次，改为-》    if (!rateLimiterService.isAllowed(tgIdKey, 1, 2))
-            if (!rateLimiterService.isAllowed(tgIdKey, 2, 1)) {
-                return;
-            }
-        }
 
         String key = "rate_limit:" + ip + ":" + uri;
         log.info("Checking rate limit for IP: {}, URI: {}", ip, uri);

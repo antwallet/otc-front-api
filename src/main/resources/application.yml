@@ -40,7 +40,7 @@ logging:
 spring:
   redisson:
     address: redis://127.0.0.1:6379
-    password: xxx #密码
+    password: 123qWE #密码
 #    password: 123qWE #密码
     timeout: 10000
     connectionPoolSize: 300
@@ -78,7 +78,7 @@ spring:
     # 数据库索引
     database: 0
     # 密码
-    password: xxx  # 密码（默认为空）
+    password: 123qWE  # 密码（默认为空）
 #    password:
     # 连接超时时间
     timeout: 10s
@@ -99,8 +99,6 @@ spring:
       transport:
         dashboard: 47.237.23.152:9090  # Sentinel 控制台的地址
         port: 9091  # Java 客户端向控制台注册的端口（这个端口是 Sentinel 客户端用来与控制台通信的，可以自定义，但需要确保没有被占用）
-  application:
-    name: front-api-service  # 项目名称，用于在 Sentinel 控制台中标识
 
 mybatis-plus:
   global-config:

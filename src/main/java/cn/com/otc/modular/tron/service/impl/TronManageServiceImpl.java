@@ -1,7 +1,6 @@
 package cn.com.otc.modular.tron.service.impl;
 
 import cn.com.otc.common.config.MyCommonConfig;
-import cn.com.otc.common.config.NacosConstant;
 import cn.com.otc.common.constants.CommonConstant;
 import cn.com.otc.common.enums.ResultCodeEnum;
 import cn.com.otc.common.exception.RRException;
@@ -122,9 +121,6 @@ public class TronManageServiceImpl implements TronManageService {
 
     @Resource
     private SharedCache userMapLocalCache;
-
-    @Resource
-    private NacosConstant nacosConstant;
 
     private static final String ACCOUNT_TYPE = "account_type";//账户类型
     private static final String TRX = "TRX";
@@ -938,67 +934,10 @@ public class TronManageServiceImpl implements TronManageService {
             /**
              * 3、获取提现手续费
              */
-            String withdrawalRate = "";
-            if ("2".equals(tronWithdrawMoneyVO.getBlockchainType())) {
-                //3.1最小提现金额的判断
-                String inrPrice = redisOperate.getRedis("INR_PRICE");
-                BigDecimal exchangeRate = new BigDecimal(inrPrice);
-                //换算成印度的价格
-                BigDecimal exchangeMoney = money.multiply(exchangeRate);
-                //印度提现最少是185
-                if (exchangeMoney.compareTo(nacosConstant.getIndianMinimumWithdrawalAmount())<0){
-                    return ResponseEntity.failure(ResultCodeEnum.WITHDRAWAL_NOT_ENOUGH.code,I18nUtil.getMessage("9001", lang));
-                }
+            TAntwalletConfig withdrawal_usdt_rax = tAntwalletConfigService.getById(WITHDRAWAL_USDT_RATE);
 
-                //3.2 手续费计算
-                //手续费= 提现金额*手续费比例
-                BigDecimal multiply = new BigDecimal(tronWithdrawMoneyVO.getMoney()).multiply(nacosConstant.getIndianPamentRate());
-                //手续费换算成印度卢比
-                multiply = multiply.multiply(exchangeRate);
-                if (multiply.compareTo(nacosConstant.getIndianPamentMinFee()) < 0) {
-                    multiply = nacosConstant.getIndianPamentMinFee();
-                }
-                //手续费再换算成usdt
-                multiply = multiply.divide(exchangeRate, 2, RoundingMode.HALF_UP);
-                withdrawalRate = multiply.toString();
-                tronWithdrawMoneyVO.setBankName("Indian Bank");
 
-            } else if ("3".equals(tronWithdrawMoneyVO.getBlockchainType())) {
-                //3.1最小提现金额的判断
-                String phpPrice = redisOperate.getRedis("PHP_PRICE");
-                BigDecimal exchangeRate = new BigDecimal(phpPrice);
-                //换算成php的价格
-                BigDecimal exchangeMoney = money.multiply(exchangeRate);
-                //菲律宾提现最少是160
-                if (exchangeMoney.compareTo(nacosConstant.getPhilippinesMinimumWithdrawalAmount())<0){
-                    return ResponseEntity.failure(ResultCodeEnum.WITHDRAWAL_NOT_ENOUGH.code,I18nUtil.getMessage("9001", lang));
-                }
-
-                //3.2 手续费计算
-                BigDecimal multiply = new BigDecimal(tronWithdrawMoneyVO.getMoney()).multiply(nacosConstant.getPhilippinesPamentRate());
-                //手续费换算php的价格
-                multiply=multiply.multiply(exchangeRate);
-                if (multiply.compareTo(nacosConstant.getPhilippinesPamentMinFee()) < 0) {
-                    multiply = nacosConstant.getPhilippinesPamentMinFee();
-                }
-                //手续费再换算成usdt
-                multiply = multiply.divide(exchangeRate, 2, RoundingMode.HALF_UP);
-                withdrawalRate = multiply.toString();
-
-            } else {
-                TAntwalletConfig withdrawal_usdt_rax = tAntwalletConfigService.getById(WITHDRAWAL_USDT_RATE);
-                TAntwalletConfig withdrawal_usdt_ton_rax = tAntwalletConfigService.getById(WITHDRAWAL_USDT_TON_RATE);
-
-                //blockchainType 链类型 0,TRON 1,TON 2：印度支付，3：菲律宾支付
-                if (tronWithdrawMoneyVO.getBlockchainType().equals("0")) {
-                    withdrawalRate = withdrawal_usdt_rax.getPValue();
-                } else if (tronWithdrawMoneyVO.getBlockchainType().equals("1")) {
-                    withdrawalRate = withdrawal_usdt_ton_rax.getPValue();
-                } else {
-                    withdrawalRate = withdrawal_usdt_rax.getPValue();
-                }
-
-            }
+            String withdrawalRate = withdrawal_usdt_rax.getPValue();
 
 
             /**
@@ -1065,7 +1004,7 @@ public class TronManageServiceImpl implements TronManageService {
              */
             String finalWithdrawId = withdrawId;
             CompletableFuture.runAsync(() -> HttpRequest.get("https://api.telegram.org/bot" + myCommonConfig.getTgHttpTgToken()
-                            + "/sendMessage?chat_id=-1002268855454&text=" + nacosConstant.getEnvType() + userInfoResult.getUserName() + "申请提现!tgId:" + userInfoResult.getUserTGID() + ",withdrawId:" + finalWithdrawId)
+                            + "/sendMessage?chat_id=-1002268855454&text=" +userInfoResult.getUserName() + "申请提现!tgId:" + userInfoResult.getUserTGID() + ",withdrawId:" + finalWithdrawId)
                     .execute().body());
 
             log.info("TronManageService.handleTronWithdrawMoney 结束申请提现,userInfoResult={},withdrawId={}", JSONUtil.toJsonStr(userInfoResult), withdrawId);

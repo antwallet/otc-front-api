@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAsync(proxyTargetClass = true)    //异步任务管理器
 @EnableScheduling
 @EnableEncryptableProperties
-@MapperScan(value = "cn.com.antwalletbot.**.dao")
+@MapperScan(value = "cn.com.otc.**.dao")
 public class OtcFrontApiApplication {
 
     public static void main(String[] args) {

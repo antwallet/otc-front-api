@@ -38,10 +38,6 @@ configurations.all {
 
 dependencies {
     implementation 'junit:junit:4.13.1'
-    // Nacos 依赖，添加版本控制
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'  // 重要！
-    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
-    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
     //junit依赖配置
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'

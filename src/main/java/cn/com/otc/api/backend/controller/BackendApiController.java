@@ -1,6 +1,5 @@
 package cn.com.otc.api.backend.controller;
 
-import cn.com.otc.common.config.NacosConstant;
 import cn.com.otc.common.exception.RRException;
 import cn.com.otc.common.redis.NoRepeatSubmit;
 import cn.com.otc.common.utils.R;
@@ -14,10 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @description:后台接口
@@ -31,9 +27,6 @@ public class BackendApiController {
 
     @Resource
     private TronManageService tronManageService;
-
-    @Resource
-    private NacosConstant nacosConstant;
 
     /**
      * 一键归集区块链余额

@@ -37,32 +37,11 @@ public interface TUserService extends IService<TUser> {
 
     void updateUserIsShowPanel(Long userId, Short isShowPanel);
 
-    void updateUserScoreAndCaptcha(Long userId, BigDecimal userScore, String captchaVerified);
-
-    void updateUserScoreAndImgVerified(Long userId, BigDecimal userScore, String userImgVerified);
-
-    void updateUserScore(TUser tUser);
-
-
-    void updateUser(Long userId, String name, String nick);
-
-
-    List<TUser> queryByUserIdList(List<String> userIdList);
-
-    //分页查询数据
-    List<TUser> getTUserByUserIds(List<String> tgIdList);
-
     /*
     * 重置密码
     * */
     void resetPassword(UserInfoResult userInfoResult, String lang);
 
-    void updateUserIpAddress(Boolean isPremium, String deviceModel, String ipAddress, Long id);
-    //修改设备型号、IP地址、注册时间、是否为会员
-    void handleUpdateUserInfo(LoginUserVO loginUserVO, String remortIP, Long id, String lang);
-
-    // 批量获取用户的信息
-    List<TUser> getTUserByTGIds(List<String> keys);
 
     /*
      * 更新语言

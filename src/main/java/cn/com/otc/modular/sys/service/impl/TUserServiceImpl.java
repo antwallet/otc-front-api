@@ -13,7 +13,6 @@ import cn.com.otc.modular.sys.dao.TUserDao;
 import cn.com.otc.modular.sys.service.TLoginRecordService;
 import cn.com.otc.modular.sys.service.TPasswordResetLogService;
 import cn.com.otc.modular.sys.service.TUserService;
-import cn.com.otc.test.GeoIpTest;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -58,8 +57,6 @@ public class TUserServiceImpl extends ServiceImpl<TUserDao, TUser> implements TU
     private TLoginRecordService tLoginRecordService;
     @Autowired
     private TPasswordResetLogService tPasswordResetLogService;
-    @Resource
-    private GeoIpTest geoIpTest;
 
     @Autowired
     private HutoolJWTUtil hutoolJWTUtil;
@@ -124,8 +121,6 @@ public class TUserServiceImpl extends ServiceImpl<TUserDao, TUser> implements TU
     }
     tUser.setIsPremium(isPremium);
     tUser.setIpAddress(StringUtils.isNotBlank(remortIP) ? remortIP : null);
-    String country = geoIpTest.getCountry(remortIP.split(",")[0]);
-    tUser.setCountry(StringUtils.isNotBlank(country) ? country : null);
     tUser.setRegistrationDate(StringUtils.isNotBlank(registrationDate) ? registrationDate : null);
     tUser.setDeviceModel(StringUtils.isNotBlank(deviceModel) ? deviceModel : null);
     tUser.setUserScore(userScore);
@@ -164,57 +159,6 @@ public class TUserServiceImpl extends ServiceImpl<TUserDao, TUser> implements TU
   }
 
     @Override
-    public void updateUserScoreAndCaptcha(Long userId, BigDecimal userScore, String captchaVerified) {
-        TUser tUser = new TUser();
-        tUser.setId(userId);
-        if (userScore.compareTo(BigDecimal.ZERO) > 0) {
-            tUser.setUserScore(userScore);
-        }
-        tUser.setCaptchaVerified(captchaVerified);
-        tUser.setUpdateTime(LocalDateTime.now());
-        this.updateById(tUser);
-    }
-
-    @Override
-    public void updateUserScoreAndImgVerified(Long userId, BigDecimal userScore, String userImgVerified) {
-        TUser tUser = new TUser();
-        tUser.setId(userId);
-        if (userScore.compareTo(BigDecimal.ZERO) > 0) {
-            tUser.setUserScore(userScore);
-        }
-        tUser.setUserImgVerified(userImgVerified);
-        tUser.setUpdateTime(LocalDateTime.now());
-        this.updateById(tUser);
-    }
-    @Override
-    public void updateUserScore(TUser tUser){
-        this.updateById(tUser);
-    }
-
-    @Override
-    public void updateUser(Long id, String name, String nick) {
-        LambdaQueryWrapper<TUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(TUser::getId,id);
-        lambdaQueryWrapper.eq(TUser::getIslock,0);
-        TUser user = this.getOne(lambdaQueryWrapper);
-        if (user.getNick().equals(nick)){
-            return;
-        }
-        TUser tUser = new TUser();
-        tUser.setName(name);
-        tUser.setId(id);
-        tUser.setNick(nick);
-        tUser.setUpdateTime(LocalDateTime.now());
-        this.updateById(tUser);
-    }
-
-    @Override
-    public List<TUser> queryByUserIdList(List<String> userIdList) {
-        return  this.baseMapper.queryByUserIdList(userIdList);
-    }
-
-
-    @Override
     public void resetPassword(UserInfoResult userInfoResult, String lang) {
         //当用户点击按钮的时候，把用户的密码初始化，使用机器人给他发送消息，告知他后，重置密码
         String key = "resetPassword_lock_" + userInfoResult.getUserTGID();
@@ -250,74 +194,12 @@ public class TUserServiceImpl extends ServiceImpl<TUserDao, TUser> implements TU
         }
     }
 
-    @Override
-    public void updateUserIpAddress(Boolean isPremium, String deviceModel, String ipAddress, Long id) {
-        TUser tUser = new TUser();
-        tUser.setId(id);
-        tUser.setIpAddress(ipAddress);
-        tUser.setDeviceModel(deviceModel);
-        tUser.setIsPremium(isPremium);
-        String country = geoIpTest.getCountry(ipAddress.split(",")[0]);
-        tUser.setCountry(StringUtils.isNotBlank(country) ? country : null);
-        tUser.setUpdateTime(LocalDateTime.now());
-        this.updateById(tUser);
-    }
+  @Override
+  public void updateUserLanguage(Long id, String lang) {
 
-    @Override
-    public void handleUpdateUserInfo(LoginUserVO loginUserVO, String remortIP, Long id, String lang) {
-        LambdaQueryWrapper<TUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(TUser::getId,id);
-        lambdaQueryWrapper.eq(TUser::getIslock,0);
-        TUser one = this.getOne(lambdaQueryWrapper);
-        if (StringUtils.isBlank(one.getDeviceModel()) || StringUtils.isBlank(one.getIpAddress()) ||
-                StringUtils.isBlank(one.getRegistrationDate()) || StringUtils.isBlank(one.getCountry()) || StringUtils.isBlank(one.getLanguage()) ||
-                StringUtils.isBlank(one.getNetworkType()) || StringUtils.isBlank(one.getNetworkStatus()) || StringUtils.isBlank(one.getResolution())) {
-            TUser tUser = new TUser();
-            tUser.setId(id);
-            tUser.setIpAddress(remortIP);
-            tUser.setDeviceModel(loginUserVO.getDeviceModel());
-            tUser.setIsPremium(loginUserVO.getIsPremium());
-            tUser.setRegistrationDate(loginUserVO.getRegistrationDate());
-            String country = geoIpTest.getCountry(remortIP.split(",")[0]);
-            tUser.setCountry(StringUtils.isNotBlank(country) ? country : null);
-            tUser.setLanguage(StringUtils.isNotBlank(lang) ? lang : null);
-            tUser.setResolution(StringUtils.isNotBlank(loginUserVO.getResolution()) ? loginUserVO.getResolution() : "");
-            tUser.setNetworkType(StringUtils.isNotBlank(loginUserVO.getNetworkType()) ? loginUserVO.getNetworkType() : "");
-            tUser.setNetworkStatus(StringUtils.isNotBlank(loginUserVO.getNetworkStatus()) ? loginUserVO.getNetworkStatus() : "");
-            tUser.setUpdateTime(LocalDateTime.now());
-            this.updateById(tUser);
-        }
+  }
 
-    }
-
-    @Override
-    public List<TUser> getTUserByTGIds(List<String> keys) {
-       return this.baseMapper.getTUserByTGIds(keys);
-    }
-
-    @Override
-    public void updateUserLanguage(Long id, String lang) {
-        //修改语言
-        TUser tUser = new TUser();
-        tUser.setLanguage(lang);
-        tUser.setId(id);
-        tUser.setUpdateTime(LocalDateTime.now());
-        this.updateById(tUser);
-
-
-        //修改缓存中的用户数据
-        LambdaQueryWrapper<TUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(TUser::getId,id);
-        userMapLocalCache.put(this.getOne(lambdaQueryWrapper).getTgId(), this.getOne(lambdaQueryWrapper));
-    }
-
-
-    @Override
-    public List<TUser> getTUserByUserIds(List<String> keys) {
-       return this.baseMapper.getTUserByUserIds(keys);
-    }
-
-    //生成随机密码规则是 a-z 0-9
+  //生成随机密码规则是 a-z 0-9
     public static String generateRandomPassword(int length) {
         if (length <= 0) {
             throw new IllegalArgumentException("Length must be positive.");
